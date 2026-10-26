@@ -1,0 +1,45 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Release signing: reads ~/.racedash-signing/keystore.properties (never committed).
+// Without it, release builds fall back to the debug key so anyone can build from source.
+def signingProps = new Properties()
+def signingFile = new File(System.getProperty('user.home'), '.racedash-signing/keystore.properties')
+if (signingFile.exists()) signingFile.withInputStream { signingProps.load(it) }
+
+android {
+    namespace 'com.racedash.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.racedash.app'
+        minSdk 24
+        targetSdk 35
+        versionCode 100
+        versionName '1.0.0'
+    }
+
+    signingConfigs {
+        release {
+            if (signingFile.exists()) {
+                storeFile file(signingProps['storeFile'])
+                storePassword signingProps['storePassword']
+                keyAlias signingProps['keyAlias']
+                keyPassword signingProps['keyPassword']
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingFile.exists() ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

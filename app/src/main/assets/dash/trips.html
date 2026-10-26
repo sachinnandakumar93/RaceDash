@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Trips</title>
+<link rel="stylesheet" href="trips.css">
+</head>
+<body>
+
+<header id="top">
+  <button id="back" class="icon" aria-label="Back">
+    <svg viewBox="0 0 24 24"><path d="M15.4 4.6 8 12l7.4 7.4 1.4-1.4-6-6 6-6z"/></svg>
+  </button>
+  <h1>TRIPS</h1>
+  <div class="seg" id="tabs">
+    <button data-tab="trips" class="sel">History</button>
+    <button data-tab="parked">Parked</button>
+  </div>
+  <div class="spacer"></div>
+  <div id="totals" class="pill"></div>
+  <button id="btnFuel" class="icon" aria-label="Fuel settings">
+    <svg viewBox="0 0 24 24"><path d="M5 3h8a1 1 0 0 1 1 1v7h1a2 2 0 0 1 2 2v4a1 1 0 0 0 2 0V9.4l-2.7-2.7 1.4-1.4L21 8.6V17a3 3 0 0 1-6 0v-4h-1v8H4V4a1 1 0 0 1 1-1zm1 2v5h6V5z"/></svg>
+  </button>
+</header>
+
+<main id="tripsView">
+  <section id="list" class="panel"></section>
+  <section id="detail" class="panel">
+    <div id="detailHead">
+      <div><b id="dTitle"></b><span id="dSub"></span></div>
+      <button id="btnDelete" class="icon small" aria-label="Delete trip">
+        <svg viewBox="0 0 24 24"><path d="M9 3h6l1 1h4v2H4V4h4zm-3 5h12l-1 13H7z"/></svg>
+      </button>
+    </div>
+    <div id="map" class="map"><div class="layer"></div><canvas class="overlay"></canvas>
+      <div class="mapBtns"><button data-z="1">+</button><button data-z="-1">−</button></div>
+      <div class="attrib">© OpenStreetMap contributors</div>
+      <div class="legend"><i></i><span>slow</span><span>fast</span></div>
+    </div>
+    <div id="dStats"></div>
+    <canvas id="graph"></canvas>
+  </section>
+  <section id="empty" class="panel hidden">
+    <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>
+    <b>No trips yet</b>
+    <span>Drives longer than 300 m are recorded automatically and show up here — even when RaceDash isn't on screen.</span>
+  </section>
+</main>
+
+<main id="parkedView" class="hidden">
+  <div id="pmap" class="map panel"><div class="layer"></div><canvas class="overlay"></canvas>
+    <div class="mapBtns"><button data-z="1">+</button><button data-z="-1">−</button></div>
+    <div class="attrib">© OpenStreetMap contributors</div>
+  </div>
+  <div id="parkCard" class="panel">
+    <div class="pbadge">P</div>
+    <b id="pAgo"></b>
+    <span id="pWhen"></span>
+    <div id="pDist"></div>
+    <button id="pClear" class="btn">Clear</button>
+  </div>
+</main>
+
+<div id="fuelSheet" class="sheetWrap hidden">
+  <div class="sheet">
+    <h2>Fuel &amp; recording</h2>
+    <div class="row"><label>Mileage</label>
+      <div class="stepper"><button data-k="kmpl" data-d="-0.5">−</button><span id="vKmpl"></span><button data-k="kmpl" data-d="0.5">+</button></div>
+      <small>km per litre</small></div>
+    <div class="row"><label>Fuel price</label>
+      <div class="stepper"><button data-k="price" data-d="-0.5">−</button><span id="vPrice"></span><button data-k="price" data-d="0.5">+</button></div>
+      <small>₹ per litre</small></div>
+    <div class="row"><label>Record trips</label>
+      <div class="seg" id="segRec"><button data-v="true">Automatic</button><button data-v="false">Off</button></div>
+      <small>Starts with the car</small></div>
+    <p class="note">New trips use these values. Past trips keep the price they were driven at.</p>
+    <div class="sheetBtns"><button id="fuelDone" class="btn primary">Done</button></div>
+  </div>
+</div>
+
+<div id="confirm" class="sheetWrap hidden">
+  <div class="sheet small">
+    <h2>Delete this trip?</h2>
+    <p class="note">This can't be undone.</p>
+    <div class="sheetBtns"><button id="cNo" class="btn">Cancel</button><button id="cYes" class="btn danger">Delete</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="themes.js"></script>
+<script src="trips.js"></script>
+</body>
+</html>

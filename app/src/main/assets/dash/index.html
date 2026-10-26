@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>RaceDash</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="layout-race">
+
+<div id="leds"></div>
+
+<header id="top">
+  <div id="clock">--:--</div>
+  <div id="date"></div>
+  <div class="spacer"></div>
+  <div id="limitTag" class="pill hidden"></div>
+  <div id="rec" class="pill rec hidden"><i></i><span>REC</span></div>
+  <div id="gps" class="pill bad"><i></i><span>NO GPS</span></div>
+  <button id="btnTrips" class="icon" aria-label="Trips"><svg viewBox="0 0 24 24"><path d="M6 3a3 3 0 0 0-1 5.8V14a5 5 0 0 0 5 5h4.2a3 3 0 1 0 0-2H10a3 3 0 0 1-3-3V8.8A3 3 0 0 0 6 3zm0 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm11 12a1 1 0 1 1 0 2 1 1 0 0 1 0-2zM14 5h5v2h-5zm0 4h5v2h-5z"/></svg></button>
+  <button id="btnLayout" class="icon" aria-label="Change layout">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="2"/><rect x="13" y="4" width="8" height="7" rx="2"/><rect x="13" y="13" width="8" height="7" rx="2"/></svg>
+  </button>
+  <button id="btnSettings" class="icon" aria-label="Settings">
+    <svg viewBox="0 0 24 24"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zm8.9 4.9-1.9 1.1.2 2.2-2.2 2.2-2.2-.2-1.1 1.9h-3.2l-1.1-1.9-2.2.2-2.2-2.2.2-2.2-1.9-1.1v-3.2l1.9-1.1-.2-2.2L7.2 3l2.2.2L10.5 1.3h3.2l1.1 1.9 2.2-.2 2.2 2.2-.2 2.2 1.9 1.1z"/></svg>
+  </button>
+</header>
+
+<main id="main">
+  <section id="sideL" class="side panel">
+    <canvas id="compass"></canvas>
+    <div class="big" id="hdgBig">N</div>
+    <div class="sub" id="hdgDeg">000°</div>
+  </section>
+
+  <section id="gaugeWrap">
+    <canvas id="gauge"></canvas>
+    <div id="speedBox">
+      <div id="speed">0</div>
+      <div id="unit">KM/H</div>
+    </div>
+  </section>
+
+  <section id="mapWrap" class="panel">
+    <div id="layer"><div id="tiles"></div><svg id="trail"><polyline id="trailLine" points=""/></svg></div>
+    <svg id="car" viewBox="0 0 40 40"><path d="M20 3 L33 35 L20 28 L7 35 Z"/></svg>
+    <div id="northBtn" class="mapchip"><svg viewBox="0 0 24 24"><path d="M12 2l5 14-5-3-5 3z"/></svg></div>
+    <div id="heading" class="mapchip">N · 000°</div>
+    <div id="mapSpeed"><b id="mapSpeedVal">0</b><small id="mapSpeedUnit">km/h</small></div>
+    <div class="mapBtns">
+      <button id="zin" aria-label="Zoom in">+</button>
+      <button id="zout" aria-label="Zoom out">−</button>
+    </div>
+    <div id="noMap" class="hidden">Map needs internet</div>
+    <div id="waitGps">Waiting for GPS…</div>
+    <div id="attrib">© OpenStreetMap contributors</div>
+  </section>
+
+  <section id="sideR" class="side panel">
+    <canvas id="gbig"></canvas>
+    <div class="sub"><span id="gbigVal">0.00</span> g · peak <span id="gpeak">0.00</span></div>
+  </section>
+</main>
+
+<footer id="stats">
+  <div class="stat gstat"><canvas id="gmini"></canvas><b id="gval">0.00g</b></div>
+  <div class="stat" id="tripStat"><label>TRIP</label><b id="trip">0.0</b><small id="tripU">km</small></div>
+  <div class="stat"><label>DRIVE</label><b id="drive">0:00</b><small>h:mm</small></div>
+  <div class="stat"><label>AVG</label><b id="avg">0</b><small class="spdU">km/h</small></div>
+  <div class="stat"><label>MAX</label><b id="max">0</b><small class="spdU">km/h</small></div>
+  <div class="stat"><label>ALT</label><b id="alt">--</b><small id="altU">m</small></div>
+  <div class="stat"><label>ODO</label><b id="odo">0</b><small id="odoU">km</small></div>
+</footer>
+
+<div id="settings" class="hidden">
+  <div class="sheet">
+    <div class="sheetHead">
+      <h1>Settings</h1>
+      <span class="note">Change settings only when parked</span>
+      <button id="closeSettings" class="icon" aria-label="Close">✕</button>
+    </div>
+    <div class="sheetBody">
+      <h2>Theme</h2>
+      <div id="themeGrid"></div>
+
+      <div class="row"><h2>Layout</h2>
+        <div class="seg" data-key="layout">
+          <button data-v="race">Race</button><button data-v="gauge">Gauge</button><button data-v="map">Map</button>
+        </div>
+      </div>
+      <div class="row"><h2>Units</h2>
+        <div class="seg" data-key="units">
+          <button data-v="kmh">km/h</button><button data-v="mph">mph</button>
+        </div>
+      </div>
+      <div class="row"><h2>Speed alert</h2>
+        <div class="stepper">
+          <button id="limDown">−</button><span id="limVal">Off</span><button id="limUp">+</button>
+        </div>
+        <div class="seg" data-key="sound">
+          <button data-v="true">Beep on</button><button data-v="false">Silent</button>
+        </div>
+      </div>
+      <div class="row"><h2>Gauge max</h2>
+        <div class="seg" data-key="gmax" id="gmaxSeg"></div>
+      </div>
+      <div class="row"><h2>Night mode</h2>
+        <div class="seg" data-key="night">
+          <button data-v="off">Off</button><button data-v="sensor">Light sensor</button><button data-v="clock">7 pm – 6 am</button>
+        </div>
+      </div>
+      <div class="row"><h2>Extras</h2>
+        <button id="resetTrip" class="btn">Reset trip</button>
+        <div class="seg" data-key="demo">
+          <button data-v="false">Live GPS</button><button data-v="true">Demo drive</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="themes.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
